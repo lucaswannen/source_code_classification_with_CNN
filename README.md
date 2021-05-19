@@ -25,11 +25,6 @@ title : Classification de langages de programmation à l'aide d'un CNN
   - [4.4. Augmentation des données](#44-augmentation-des-données)
   - [5.5. Comparaisons et Résultats](#55-comparaisons-et-résultats)
 
-__Étudiants de l'équipe__ :
-- Bertrand DESQUENNE
-- Nathan FUENTES
-- Lucas WANNENMACHER
-
 # 1. Introduction
 
 Dans ce projet, nous avons créé un classifieur de langages de programmation pouvant prédire les 4 langages **C**, **html**, **python** et **Java**, dont la longueur est supérieure ou égale à 1024 caractères.
