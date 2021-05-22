@@ -25,26 +25,26 @@ title : Classification de langages de programmation à l'aide d'un CNN
 
 # 1. Introduction
 
-Dans ce projet, nous avons créé un classifieur de langages de programmation pouvant prédire les 4 langages **C**, **html**, **python** et **Java**, dont la longueur est supérieure ou égale à 1024 caractères.
+In this project, I have created a programming language classifier that can predict the 4 languages ​​**C**, **Html**, **Python** and **Java**, whose length is greater than or equal to 1024 characters.
 
-Notre avons effectué cela avec une approche originale, étant donné que nous nous sommes basés sur un **CNN** avec une **tokenisation par caractère**, contrairement à la norme qui est plutôt d'utiliser des RNN/LSTM.
+I did this with an original approach, given that we relied on a **CNN** with a **character-oriented tokenization**, unlike the standard which is rather to use RNN / LSTM.
 
-Cette approche s'appuie sur celle présentée dans le papier de recherche [Character-level Convolutional Networks for Text Classification](#11-présentation-de-larticle), sans pour autant y être très fidèle, et que nous avons adapté à la classification de langages de programmation. Nous souhaitions une approche par caractère, étant donné que les tokenisations disponibles et fréquentes dans la littérature sont basés pour analyser des textes dans les langues naturelles, et non celles des langages de programmation.
+This approach is based on the one presented in the research paper This approach is based on the one presented in the research paper [Character-level Convolutional Networks for Text Classification](#41-présentation-of-the-article), without being very faithful to it, and which I have adapted to the classification of programming languages. I wanted a character-based approach, since the tokenizations available and frequent in the literature are based to analyze texts in natural languages, and not those of programming languages.
 
 # 2. Demonstration: let's use our classifier !
 
-Vous pouvez utiliser notre classifieur et faire des prédictions sur un script (C, html, java ou python) de plus de 1024 caractères :
+You can use our classifier and make predictions on a script (C, html, java or python) longer than 1024 characters:
 
-- Clonez le projet :
-
-```
-$git clone https://gitlab.insa-rouen.fr/lwannenmacher/projetml.git
-```
-
-- Lancez le script python *predict_a_langage.py* :
+- Clone the project:
 
 ```
-$python3 predict_a_langage.py votre_fichier
+$git clone https://github.com/lucaswannen/source_code_classification_with_CNN.git
+```
+
+- Launch the python script *predict_a_langage.py* :
+
+```
+$python3 predict_a_langage.py your_file
 ```
 
 # 3. Technical details
