@@ -49,41 +49,42 @@ $python3 predict_a_langage.py your_file
 
 # 3. Technical details
 
-Nous vous conseillons de lire le [résumé de l'article de recherche](#4-résumé-de-larticle-de-recherche) que nous avons mis à la fin de ce document avant de lire cette partie.
+I advise you to read the [Summary of the research article](#4-summary-of-the-research-article) 
+that I put at the end of this document before reading this part.
 
 ## 3.1. Global architecture and preprocessing
 
-En entrée, nous avons **une chaine de caractères** (un script java, C, python ou html) de **taille supérieure ou égale à 1024 caractères**. Cette chaine de caractères est coupée de manière à conserver uniquement les 1024 premiers caractères : cela permet à notre CNN d'avoir une entrée de taille fixe.
+As input, there is **a character string** (a java, C, python or html script) of **size greater than or equal to 1024 characters**. This string of characters is cut so as to keep only the first 1024 characters: this allows our CNN to have a fixed size entry.
 
-Les caractères sont ensuite traduits en chiffres grâce à un dérivé de la table ASCII, qui traite 101 caractères différents, dont par exemple les tabulations ou retours chariots, qui sont importants dans notre cas. Puis, ils sont **quantifiés** avec la méthode one-hot encoding, et cela est vectorisé et binarisé. À ce stade, chaque script est donc encodé dans **une matrice 2D** binaire de taille **1024*101** : 1024 étant la taille du fichier et 101 étant le nombre de caractères différents possibles.
+The characters are then translated into numbers using a derivative of the ASCII table, which processes 101 different characters, including for example tabs or carriage returns, which are important in our case. Then, they are **quantized** with the one-hot encoding method, and this is vectorized and binarized. At this point, each script is therefore encoded in **a 2D** binary matrix of size **1024 *  101**: 1024 being the size of the file and 101 being the number of different possible characters.
 
 ## 3.2. CNN Architecture
 
-- __Le modèle de l'article__
+- __The research paper model__
 
-Nous avons tout d'abord essayé de reproduire à l'identique le modèle proposé dans l'article de recherche. Leurs implémentation avait été réalisée sur __Torch 7__ mais comme nous n'y avions pas accès, nous avons dû nous baser uniquement sur leur document.
+I first tried to reproduce identically the model proposed in the research article. Their implementation was done on __Torch 7__ but since I did not have access to them, I had to rely solely on their document.
 
-- __Le modèle de notre approche__
+- __The model of our approach__
 
-Nous avons réalisé un second modèle : un CNN effectuant des convolutions 2D et non 1D comme dans l'article, permettant alors de traiter le problème de manière similaire à de la classification d'images en niveaux de gris. C'est là toute l'originalité de notre approche.
-Pour cela une dernière étape de préprocessing est nécessaire. Elle augmente artificiellement la dimension de notre matrice pour l'amener à **(1024,101,1)**.
+I made a second model: a CNN performing 2D and not 1D convolutions as in the article, thus allowing the problem to be treated in a way similar to the classification of images in gray levels. This is the originality of my approach.
+For this a last preprocessing step is necessary. It artificially increases the dimension of our matrix to bring it to **(1024,101,1)**.
 
-Notre modèle est composé de 3 couches de convolutions 2D avec 2 couches de Max Pooling intercalées. On retrouve à la suite de cela deux couches denses pour la classification avec un dropout entre les deux.
+The model is composed of 3 layers of 2D convolutions with 2 layers of Max Pooling interspersed. Following this, we find two dense layers for classification with a dropout between the two.
 
 ## 3.3. Model tuning & hyper-parameters
 
-Afin d'obtenir les meilleurs performances, nous pouvons jouer sur les hypers-paramètres de nos modèles ou même modifier ces derniers.
+In order to obtain the best performance, we can adjust the hypersparameters of our models or even modify them.
 
-On peut notamment jouer sur :
+We can in particular play on:
 
-- la probabilité de dropout
-- le nombre de caractères pris en compte dans chaque fichier
-- le nombre d'epochs lors de l'apprentissage
-- le taux d'apprentissage
+- the probability of dropout
+- the number of characters taken into account in each file
+- the number of epochs during learning
+- the learning rate
 
 ## 3.4 Dataset
 
-Le dataset que nous utilisons contient des milliers de fichiers de différents langages. Ils représentent au total __150 Mo__ de données et __238 000 échantillons__. Les langages sont les suivants :
+The dataset I used contains thousands of files from different languages. They represent a total of __150 MB__ of data and __238,000 samples__. The languages ​​are as follows :
 
 - bash
 - c
@@ -107,26 +108,26 @@ Le dataset que nous utilisons contient des milliers de fichiers de différents l
 - swift
 - vb.net
 
-Nous avons décidé d'en choisir uniquement 4 : c, html, java et python, afin de rendre les apprentissages plus simples pour notre projet. On pourrait très bien imaginer par la suite ajouter d'autres langages.  
-Beaucoup des fichiers présents dans le dataset ont une taille inférieure à 1024 caractères. Ainsi, une des étapes du préprocessing consiste en un filtrage de ces fichiers trop petits. Finalement nous nous retrouvons avec environ 1500 fichiers échantillons pour chacun des 4 langages.
+I decided to choose only 4: c, html, java and python, in order to make learning easier for our project. We could very well imagine adding other languages ​​later.
+Many of the files in the dataset are smaller than 1024 characters. Thus, one of the stages of preprocessing consists in filtering these files which are too small. Eventually I ended up with around 1500 sample files for each of the 4 languages.
 
 ## 3.5. Results
 
-Voici les résultats pour les différents modèles que nous avons testés. Nous retrouvons pour chaque modèle ses caractéristiques, la valeur de la précision sur le jeu de test ainsi que la matrice de confusion obtenue. Nous avons effectué tous les calculs sur le même jeu de test pour que la comparaison soit cohérente.
+Here are the results for the different models I tested. I find for each model its characteristics, the value of the precision on the test set as well as the confusion matrix obtained. I performed all the calculations on the same test set to keep the comparison consistent.
 
 - ### __Le modèle de l'article__
 
   - model_article_dense-only-3ep
 
-      Caractéristiques :
+      Characteristics :
 
-    - couche dense uniquement
-    - caractères : 1024
-    - epoch : 3
+    - dense layer only
+    - characters: 1024
+    - epoch: 3
 
-      Accuracy : 44.67 %
+      Accuracy: 44.67%
 
-      ![matrice de confusion](confusions/model_article_dense-only-3ep.png)
+      ![confusion matrix](confusions/model_article_dense-only-3ep.png)
 
       ---
 
@@ -139,47 +140,48 @@ Voici les résultats pour les différents modèles que nous avons testés. Nous 
 
       Accuracy : 30.52 %
 
-      ![matrice de confusion](confusions/model_article_3ep_1024.png)
+      ![confusion matrix](confusions/model_article_3ep_1024.png)
 
       ---
 
   - model_article_3ep_512
 
-      Caractéristiques :
+      Characteristics :
 
-    - caractères : 512
-    - epoch : 3
+    - characters: 512
+    - epoch: 3
 
-      Accuracy : 24.16 %
+      Accuracy: 24.16%
 
-      ![matrice de confusion](confusions/model_article_3ep_512.png)
+
+      ![confusion matrix](confusions/model_article_3ep_512.png)
 
       ---
 
   - model_article_3ep_512_2
 
-      Caractéristiques :
+      Characteristics :
 
-    - caractères : 512
-    - epoch : 3
+    - characters: 512
+    - epoch: 3
 
-      Accuracy : 39.87 %
+      Accuracy: 39.87%
 
-      ![matrice de confusion](confusions/model_article_3ep_512_2.png)
+      ![confusion matrix](confusions/model_article_3ep_512_2.png)
 
       ---
 
   - model_article_3ep_256_0.001lr
 
-      Caractéristiques :
+      Characteristics :
 
-    - caractères : 256
-    - epoch : 3
-    - taux d'apprentissage : 0.001
+    - characters: 256
+    - epoch: 3
+    - learning rate: 0.001
 
-      Accuracy : 24.16 % %
+      Accuracy : 24.16 %
 
-      ![matrice de confusion](confusions/model_article_3ep_256_0.001lr.png)
+      ![confusion matrix](confusions/model_article_3ep_256_0.001lr.png)
 
 ---
 
@@ -187,16 +189,16 @@ Voici les résultats pour les différents modèles que nous avons testés. Nous 
 
   - model_3_epochs
 
-      Caractéristiques :
+      Characteristics :
 
-    - caractères : 1024
+    - characters: 1024
     - epoch : 3
 
       <!-- Accuracy : 89.84 % -->
       <!-- Accuracy : 88.64 % -->
       Accuracy : 80.56 %
 
-      ![matrice de confusion](confusions/model_3_epochs.png)
+      ![confusion matrix](confusions/model_3_epochs.png)
 
       ---
 
@@ -212,15 +214,15 @@ Voici les résultats pour les différents modèles que nous avons testés. Nous 
       <!-- Accuracy : 88.49 % -->
       Accuracy : 80.24 %
 
-      ![matrice de confusion](confusions/model_3_epochs_0.5dropout.png)
+      ![confusion matrix](confusions/model_3_epochs_0.5dropout.png)
 
       ---
 
   - model_6_epochs_0.5dropout
 
-      Caractéristiques :
+      Characteristics :
 
-    - caractères : 1024
+    - characters: 1024
     - epoch : 6
     - dropout : 50 %
 
@@ -232,58 +234,58 @@ Voici les résultats pour les différents modèles que nous avons testés. Nous 
 
       ---
 
-Pour conlure, les résultats que nous obtenons avec le dernier modèle montrent une précision de 84.70 % , ce qui est satisfaisant pour le projet et permet de classifier correctement la majorité des codes que l'on pourrait lui proposer.
+To conlure, the results which we obtain with the last model show an accuracy of 84.70%, which is satisfactory for the project and makes it possible to correctly classify the majority of the codes which one could propose to him.
 
 # 4. Summary of the research article
 
 ## 4.1. Présentation de l'article
 
-L'article de recherche s'intitule "__Character-level Convolutional Networks for Text
-Classification__". Il a été publié le __16 Avril 2016__ et écrit par __Xiang Zhang__, __Junbo Zhao__ et __Yann LeCun__ de l'__Institut Courant de sciences mathématiques__ de l'__Université de New York__.
+The research article is titled "__Character-level Convolutional Networks for Text
+Classification__ ". It was published on __April 16, 2016__ and written by __Xiang Zhang__, __Junbo Zhao__ and __Yann LeCun__ of the __ Current Institute of Mathematical Sciences__ at __ New York University__.
 
 ## 4.2. Goals
 
-Cet article propose une exploration empirique de l'utilisation des réseaux de neurones convolutifs (CNN) au niveau des caractères pour la classification de textes.
+This article provides an empirical exploration of the use of convolutional neural networks (CNNs) at the character level for text classification.
 
-Les auteurs indiquent qu'il y avait déjà à ce moment beaucoup d'articles sur l'utilisation de CNN sur des mots pour de la classification de texte et quelques travaux sur une utilisation des caractères mais toujours avec une base d'apprentissage sur des mots. Cependant, cet article est le premier qui traite de CNN se basant uniquement sur les caractères. Cela permet, en plus de ne pas avoir besoin de comprendre la structure syntaxique et sémantique d'une langue, d'abstenir la machine de la compréhension des mots.  
-Le fait de travailler uniquement sur les caractères présente également un avantage sur les combinaisons de caractères anormales, telles que les fautes d'orthographe et les émoticônes, qui peuvent être naturellement apprises.
+The authors indicate that at this time there were already many articles on the use of CNN on words for text classification and some work on the use of characters but still with a learning base on words. . However, this article is the first to discuss CNN based only on characters. This allows, in addition to not needing to understand the syntactic and semantic structure of a language, to prevent the machine from understanding words.
+Working only on characters also has an advantage over abnormal character combinations, such as misspellings and emoticons, which can be learned naturally.
 
 ## 4.3. Model construction
 
 ### 4.3.1. Entering and Quantizing Characters
 
-Tout commence avec du texte en entrée ayant deux tailles définies : 1024 et 256. Les caractères vont être __quantifiés__ avec la méthode "one-hot". L'alphabet est le suivant :
+It all starts with input text having two defined sizes: 1024 and 256. The characters will be __quantified__ with the "one-hot" method. The alphabet is as follows:
 
 `abcdefghijklmnopqrstuvwxyz0123456789-,;.!?:’’’/\|_@#$%ˆ&*˜‘+-=<>()[]{}`
 
-Il contient 70 caractères, les vecteurs sont donc de taille 70.
+It contains 70 characters, so the vectors are of size 70.
 
-En entrée du modèle nous avons donc une matrice de soit __70\*1024__ ou soit __70\*256__.
+As input to the model we therefore have a matrix of either __70 \ * 1024__ or __70 \ * 256__.
 
 ### 4.3.2. The neural network
 
-Le réseau a une profondeur de 9 avec __6 couches de convolution__ puis __3 denses__. Il s'agit de convolutions à une dimension avec du __max-pooling__ temporel. 2 __dropout__ sont placés entre les 3 couches denses avec une probabilité de 0,5.
+The network is 9 deep with __6 layers of convolution__ then __3 dense__. These are one-dimensional convolutions with temporal __max-pooling__. 2 __dropout__ are placed between the 3 dense layers with a probability of 0.5.
 
-L'apprentissage se fait grâce à une __descente de gradient stochastique__ avec __mini-lots__ de taille 128. Le pas initial est de 0,01 et est divisé par deux toutes les 3 époques (epoch), 10 fois.
+The learning is done thanks to a __stochastic gradient descent__ with __mini-batches__ of size 128. The initial step is 0.01 and is divided by two every 3 epochs (epoch), 10 times.
 
-Les poids sont initialisés avec une __distribution gaussienne__ avec une moyenne de 0 et un écart-type de 0,02 pour 1024 caractères et 0,05 pour 256.
+The weights are initialized with a __Gaussian distribution__ with a mean of 0 and a standard deviation of 0.02 for 1024 characters and 0.05 for 256.
 
-L'implémentation a été réalisée avec Torch 7.
+The implementation was done with Torch 7.
 
 ## 4.4. Data augmentation
 
-Les auteurs nous expliquent que l'"augmentation de données" est utile pour contrôler l'erreur de généralisation. Cependant pour du texte c'est compliqué d'appliquer les mêmes méthodes que pour l'imagerie et demander à des hommes de reformuler le texte est inenvisageable avec le grand nombre de données. Le choix qui est fait ici est de remplacer certains mots par leurs synonymes aléatoirement en utilisant des distributions géométriques avec un paramètre déterminant la probabilité de remplacer un mot et un autre déterminant le synonyme qui va être utilisé.
+The authors tell us that "data augmentation" is useful in controlling for generalization error. However, for text it is complicated to apply the same methods as for imagery and asking men to rephrase the text is unthinkable with the large amount of data. The choice made here is to replace certain words with their synonyms at random using geometric distributions with one parameter determining the probability of replacing a word and another determining the synonym that will be used.
 
 ## 5.5. Comparisons and results
 
-Les chercheurs ont comparé les erreurs de tests obtenus avec ce modèle avec des méthodes traditionnelles comme le "__Sac de mots__", "__Sac de n-grammes__" ou "__k-moyennes sur plongement lexical__" et avec des modèles de deep learning comme des **CNN** et un **LSTM** basés sur les **mots**.  
-Bien sur les tests ont été effectués dans des conditions similaires pour faire des comparaisons.  
-Ils ont aussi essayé de changer l'alphabet en prenant en compte les majuscules mais ça apportait en général de moins bons résultats avec pour cause probable que ça ne change rien à la sémantique de la phrase.  
-Ils ont nourri ces différentes techniques avec 8 datasets de tailles différentes allant de la centaine de millier à plusieurs millions d'échantillons.
+The researchers compared the test errors obtained with this model with traditional methods such as "__Bag of words__", "__Bag of n-grams__" or "__k-means on lexical embedding__" and with deep learning models such as * * CNN ** and a ** LSTM ** based on ** words **.
+Of course the tests were carried out under similar conditions to make comparisons.
+They also tried to change the alphabet by taking into account the capital letters but that generally brought less good results with the probable cause that it does not change anything in the semantics of the sentence.
+They fed these different techniques with 8 datasets of different sizes ranging from hundreds of thousands to several million samples.
 
-Les résultats montrent que leur CNN sur les caractères est la méthode la plus efficace sur les grands datasets (à partir d'environ 1 million d'échantillons pour l'entrainement). En dessous c'est la méthode traditionnelle de sac de n-gramme qui semble la mieux.  
-Les auteurs remarquent que leur modèle semble faire moins d'erreurs que les autres sur des données brutes générées par des utilisateurs, pouvant donc comporter des erreurs de langue. Cette méthode aurait donc plutôt des applications dans le monde réel.
+The results show that their CNN on characters is the most efficient method on large datasets (from around 1 million samples for training). Below this is the traditional n-gram bag method that looks best.
+The authors note that their model seems to make fewer errors than the others on raw data generated by users, which may therefore include language errors. This method would therefore have applications in the real world.
 
-La conclusion la plus importante de ces expériences est que les CNN au niveau des caractères peuvent fonctionner pour la classification de textes sans avoir besoin de la connaissance des mots. Cela indique que le langage peut être considéré comme un signal qui n'est pas différent de tout autre type de signal.
+The most important conclusion from these experiments is that character level CNNs can work for text classification without the need for word knowledge. This indicates that language can be thought of as a signal which is no different from any other type of signal.
 
-Ils prennent le soin de préciser à nouveau que cette méthode n'offre pas de solution standard à tous les problèmes mais qu'il faut faire un choix selon la situation.
+They take care to specify again that this method does not offer a standard solution to all problems but that a choice must be made according to the situation.
